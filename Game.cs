@@ -2,87 +2,75 @@ using System;
 
 namespace Spaceman
 {
-  class Game
+  internal class Game
   {
     //FIELDS
-    private string codeWord;
-    private string[] codeWords = new string[] {"alien", "cat", "orange"};
-    private string currentWord;
-    private int maxGuesses;
-    private int wrongGuesses;
     Ufo u = new Ufo();
+    
+    //PROPERTIES
+    private string CodeWord{ set; get; }
+    private string[] CodeWords{ set; get; }
+    private string CurrentWord{ set; get; }
+    private int MaxGuesses{ set; get; }
+    private int WrongGuesses{ set; get; }
+
     //CONSTRUCTOR
     public Game(){
       Random rnd = new Random();
-      codeWord = codeWords[rnd.Next(0, codeWords.Length)];
-      maxGuesses = 5;
-      wrongGuesses = 0;
-      currentWord = "";
-      for(int i=0 ; i<codeWord.Length ;i++){
-        currentWord+="_";
+      CodeWords = new string[] {"alien", "cat", "orange"};
+      CodeWord = CodeWords[rnd.Next(0, CodeWords.Length)];
+      MaxGuesses = 5;
+      WrongGuesses = 0;
+      CurrentWord = "";
+      for(int i=0 ; i<CodeWord.Length ;i++){
+        CurrentWord+="_";
       }
     }
 
     //METHODS
+    public void Greet(){
+      Console.WriteLine("Welcome! Find the secret word to save our friend.");
+    }
+
     public void Ask(){
       int indexLetter;
       Console.Write("Write a letter: ");
       string aLetter = Console.ReadLine();
-      string comodinWord = codeWord;
+      string comodinWord = CodeWord;
 
-      if(aLetter.Length==1)
-      {
+      if(aLetter.Length==1){
         char letter = Convert.ToChar(aLetter);
         if(comodinWord.Contains(letter)){
           while(comodinWord.IndexOf(letter)>=0){
             indexLetter = comodinWord.IndexOf(letter);
-            currentWord = currentWord.Remove(indexLetter, 1).Insert(indexLetter, aLetter);
+            CurrentWord = CurrentWord.Remove(indexLetter, 1).Insert(indexLetter, aLetter);
             comodinWord = comodinWord.Remove(indexLetter, 1).Insert(indexLetter, "_");
           }
         }else{
-          wrongGuesses++;
+          WrongGuesses++;
           u.AddPart();
         }
       }
       else{
         Console.WriteLine("You must type 1 letter!");
       }
-    }
+    }//end of ask
 
 
 
     public void Display(){
-      Ufo spaceship = new Ufo();
-      Console.WriteLine(spaceship.Stringify());
-      Console.WriteLine($"You have {maxGuesses-wrongGuesses} wrong guesses left.");
-      Console.WriteLine("Current Word: "+currentWord);
-    }
-    public  bool DidWin(){
-      return codeWord.Equals(currentWord);
-    }
-    public  bool DidLose(){
-      return wrongGuesses>=maxGuesses;
-    }
-    public void Greet()
-    {
-      Console.WriteLine("Welcome! Find the secret word to save our friend.");
+      Console.WriteLine(u.Stringify());
+      Console.WriteLine($"You have {MaxGuesses-WrongGuesses} wrong guesses left.");
+      Console.WriteLine("Current Word: "+CurrentWord);
     }
 
-    //PROPERTIES
-    public string CodeWord{
-      set; get;
+    public  bool DidWin(){
+      return CodeWord.Equals(CurrentWord);
     }
-    public string[] CodeWords{
-      set; get;
+
+    public  bool DidLose(){
+      return WrongGuesses>=MaxGuesses;
     }
-    public string CurrentWord{
-      private set; get;
-    }
-    public int MaxGuesses{
-      set; get;
-    }
-    public int WrongGuesses{
-      set; get;
-    }
+
   }
 }
